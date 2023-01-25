@@ -50,6 +50,10 @@
         "react/sort-comp": ["warn"],
         "class-methods-use-this": ["warn"],
         "camelcase": ["error", {"properties": "never"}],
-        "linebreak-style": "off"
+        "linebreak-style": ["off"],
+        "semi": ["warn"],
+        "space-before-function-paren": ["warn"],
+        "space-before-blocks": ["warn"],
+        "eol-last": ["warn"]
     }
 }
