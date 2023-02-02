@@ -54,6 +54,8 @@
         "semi": ["warn"],
         "space-before-function-paren": ["warn"],
         "space-before-blocks": ["warn"],
-        "eol-last": ["warn"]
+        "eol-last": ["warn"],
+        "arrow-parens": ["warn"],
+        "object-curly-newline": ["warn"]
     }
 }
