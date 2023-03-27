@@ -24,6 +24,7 @@ import {
 } from '@mui/icons-material';
 
 import logo from '../../images/logo.png';
+import SearchDialog from '../SearchDialog';
 
 const pages = [
   {
@@ -139,6 +140,15 @@ const pages = [
 const languages = ['Հայերեն', 'English', 'Русский'];
 
 function Header() {
+  const [searchDialogOpened, setSearchDialogOpened] = React.useState(false);
+
+  const handleOpenSearchDialog = () => {
+    setSearchDialogOpened(true);
+  };
+
+  const handleCloseSearchDialog = () => {
+    setSearchDialogOpened(false);
+  };
   const styles = (theme) => ({
     appBar: {
       backgroundColor: 'aliceblue',
@@ -339,7 +349,7 @@ function Header() {
           >
             <Tooltip title="Search">
               <IconButton
-                // onClick={handleOpenSearchBox}
+                onClick={handleOpenSearchDialog}
               >
                 <SearchIcon sx={classes.icon} />
               </IconButton>
@@ -390,6 +400,10 @@ function Header() {
           </Box>
         </Toolbar>
       </Container>
+      <SearchDialog
+        open={!!searchDialogOpened}
+        onClose={handleCloseSearchDialog}
+      />
     </AppBar>
   );
 }
