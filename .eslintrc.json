@@ -41,6 +41,7 @@
         "react/jsx-closing-bracket-location": ["off"],
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
         "react/jsx-space-before-closing": ["off"],
+        "react/jsx-no-useless-fragment": ["off"],
         "react/prefer-stateless-function": ["off"],
         "no-underscore-dangle": [ "error", { "allowAfterThis": true }],
         "react/jsx-no-bind": 0,
