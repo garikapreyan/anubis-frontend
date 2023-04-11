@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useRef} from 'react';
 import {
   AppBar,
   Box,
@@ -23,127 +24,19 @@ import {
   Search as SearchIcon,
 } from '@mui/icons-material';
 
+import {menuService} from '../../services';
+import Loader from '../Loader';
 import logo from '../../images/logo.png';
-
-const pages = [
-  {
-    id: 1,
-    name: 'Knives',
-    parent_id: null,
-  },
-  {
-    id: 10,
-    name: 'Chef Knife__',
-    parent_id: 1,
-  },
-  {
-    id: 134,
-    name: 'Chef Knife__++',
-    parent_id: 10,
-  },
-  {
-    id: 135,
-    name: 'Chef Knife__+++',
-    parent_id: 10,
-  },
-  {
-    id: 11,
-    name: 'Chef Knife___',
-    parent_id: 1,
-  },
-  {
-    id: 12,
-    name: 'Chef Knife____',
-    parent_id: 1,
-  }, {
-    id: 13,
-    name: 'Chef Knife_____',
-    parent_id: 1,
-  }, // .......................... 1
-  {
-    id: 2,
-    name: 'Sharpening Tools',
-    parent_id: null,
-  },
-  {
-    id: 20,
-    name: 'Chef Knife+',
-    parent_id: 2,
-  },
-  {
-    id: 21,
-    name: 'Chef Knife++',
-    parent_id: 2,
-  }, // ....................... 2
-  {
-    id: 3,
-    name: 'Accessories',
-    parent_id: null,
-  },
-  {
-    id: 30,
-    name: 'Accessories....',
-    parent_id: 3,
-  },
-  {
-    id: 31,
-    name: 'Accessories---',
-    parent_id: 3,
-  },
-  {
-    id: 32,
-    name: 'Accessories+++',
-    parent_id: 3,
-  }, // ...................................3
-  {
-    id: 4,
-    name: 'Electronics',
-    parent_id: null,
-  },
-  {
-    id: 40,
-    name: 'Chef Knife.',
-    parent_id: 4,
-  },
-  {
-    id: 41,
-    name: 'Chef Knife..',
-    parent_id: 4,
-  },
-  {
-    id: 42,
-    name: 'Chef Knife...',
-    parent_id: 4,
-  },
-  {
-    id: 43,
-    name: 'Chef Knife....',
-    parent_id: 4,
-  }, // ...............  4
-  {
-    id: 5,
-    name: 'Clothes',
-    parent_id: null,
-  },
-  {
-    id: 50,
-    name: 'Chef Knife-',
-    parent_id: 5,
-  },
-  {
-    id: 51,
-    name: 'Chef Knife--',
-    parent_id: 5,
-  }, // ...................... 5
-];
-const languages = ['Հայերեն', 'English', 'Русский'];
 
 function Header() {
   const styles = (theme) => ({
     appBar: {
-      backgroundColor: 'aliceblue',
+      backgroundColor: '#fff',
       paddingTop: theme.spacing(0.5),
       paddingBottom: theme.spacing(1),
+      position: 'fixed',
+      zIndex: '1000000',
+      top: '0',
     },
     container: {
       padding: '0 !important'
@@ -168,22 +61,72 @@ function Header() {
         margin: theme.spacing(1),
         fontSize: theme.spacing(4),
       },
-    }
+    },
+    subMenu: {
+      marginTop: '62px',
+    },
   });
   const [anchorElLanguage, setAnchorElLanguage] = React.useState(null);
+  const [languages, setLanguages] = React.useState([]);
+  const [pages, setPages] = React.useState([]);
+  const [selectedLanguage, setSelectedLanguage] = React.useState('');
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElSub, setAnchorElSub] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const isInitialMount = useRef(true);
   const theme = useTheme();
   const classes = styles(theme);
   const mainMenu = pages.filter((item) => !item.parent_id);
 
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
+  const getMenu = (languageId) => {
+    setIsLoading(true);
+    menuService.getMenusAndSubmenus(languageId)
+      .then((res) => {
+        const {error, message, data} = res;
+        if (error) {
+          throw new Error(message);
+        }
+
+        setPages(data);
+      })
+      .catch((e) => {
+        console.log(e.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
-  const handleOpenSubMenu = (e) => {
-    setAnchorElSub(e.currentTarget);
+  const getLanguageList = () => {
+    menuService.getLanguageList()
+      .then((res) => {
+        const {error, message, data} = res;
+        if (error) {
+          throw new Error(message);
+        }
+
+        const defaultLanguage = (data.length && data.find((item) => item.short_name === 'hy').id) || '';
+        setLanguages(data);
+        setSelectedLanguage(defaultLanguage);
+        getMenu(defaultLanguage);
+      })
+      .catch((e) => {
+        console.log(e.message);
+      });
   };
 
+  React.useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      getLanguageList();
+    }
+  });
+  const handleOpenSubMenu = (id) => {
+    const anchorEl = document.getElementById(id);
+    setAnchorElSub(anchorEl);
+  };
+  const handleCloseSubMenu = () => {
+    setAnchorElSub(null);
+  };
   const handleOpenLanguageMenu = (event) => {
     setAnchorElLanguage(event.currentTarget);
   };
@@ -191,16 +134,24 @@ function Header() {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
-  const handleCloseSubMenu = (id) => {
-    setAnchorElSub(null);
+
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
   };
 
   const handleCloseLanguageMenu = () => {
     setAnchorElLanguage(null);
   };
 
+  const handleSelectLanguage = (id) => {
+    setSelectedLanguage(id);
+    getMenu(id);
+    handleCloseLanguageMenu();
+  };
+  const isLanguageSelected = (id) => id === selectedLanguage;
+
   return (
-    <AppBar position="static" sx={classes.appBar}>
+    <AppBar position="fixed" sx={classes.appBar}>
       <Container maxWidth="xl" sx={classes.container}>
         <Toolbar>
           <Box
@@ -241,7 +192,7 @@ function Header() {
                 && (
                 <NestedMenuItem
                   key={e.id}
-                  label={e.name}
+                  label={e.labels[0].label}
                   parentMenuOpen={Boolean(anchorElNav)}
                 >
                   {pages.map((item) => (item.parent_id === e.id
@@ -250,7 +201,7 @@ function Header() {
                       key={item.id}
                       onClick={() => handleCloseNavMenu(item.id)}
                     >
-                      {item.name}
+                      {item.labels[0].label}
                     </MenuItem>
                     )
                   ))}
@@ -293,27 +244,34 @@ function Header() {
             {mainMenu.map((elem) => (
               <Box key={elem.id}>
                 <Button
-                  onClick={handleOpenSubMenu}
+                  aria-owns={anchorElSub ? 'menu-appbar' : undefined}
+                  aria-haspopup="true"
+                  onClick={() => handleOpenSubMenu(elem.id)}
+                  onMouseOver={() => handleOpenSubMenu(elem.id)}
                   sx={classes.link}
                   id={elem.id}
                   >
-                  {elem.name}
+                  {elem.labels[0].label}
                 </Button>
                 <Menu
-                  sx={{ mt: '45px' }}
+                  sx={classes.subMenu}
                   id="menu-appbar"
                   anchorEl={anchorElSub}
                   anchorOrigin={{
                     vertical: 'top',
-                    horizontal: 'center',
+                    horizontal: 'left',
                   }}
-                  keepMounted
+                  // keepMounted
                   transformOrigin={{
                     vertical: 'top',
-                    horizontal: 'center',
+                    horizontal: 'left',
                   }}
-                  open={!!anchorElSub && +anchorElSub.id === +elem.id}
+                  open={!!anchorElSub && anchorElSub.id === elem.id}
+                  // open={Boolean(anchorElSub)}
                   onClose={handleCloseSubMenu}
+                  MenuListProps={{
+                    onMouseLeave: handleCloseSubMenu
+                  }}
                   >
                   {pages.map((item) => (item.parent_id === elem.id
                       && (
@@ -322,7 +280,7 @@ function Header() {
                         onClick={() => handleCloseSubMenu(item.id)}
                         sx={classes.link}
                       >
-                        {item.name}
+                        {item.labels[0].label}
                       </MenuItem>
                       )
                   ))}
@@ -366,30 +324,35 @@ function Header() {
               </IconButton>
             </Tooltip>
             <Menu
-              sx={{ mt: '45px' }}
+              sx={classes.subMenu}
               id="menu-appbar"
               anchorEl={anchorElLanguage}
               anchorOrigin={{
                 vertical: 'top',
-                horizontal: 'right',
+                horizontal: 'left',
               }}
               keepMounted
               transformOrigin={{
                 vertical: 'top',
-                horizontal: 'right',
+                horizontal: 'left',
               }}
               open={!!anchorElLanguage}
               onClose={handleCloseLanguageMenu}
             >
               {languages.map((language) => (
-                <MenuItem key={language} onClick={handleCloseLanguageMenu}>
-                  <Typography textAlign="center">{language}</Typography>
+                <MenuItem
+                  key={language.id}
+                  onClick={() => handleSelectLanguage(language.id)}
+                  selected={isLanguageSelected(language.id)}
+                >
+                  <Typography textAlign="center">{language.name}</Typography>
                 </MenuItem>
               ))}
             </Menu>
           </Box>
         </Toolbar>
       </Container>
+      <Loader show={isLoading} />
     </AppBar>
   );
 }
