@@ -21,7 +21,7 @@ const theme = createTheme({
     icon: {
       main: '#d6d6d6',
     },
-  }
+  },
 });
 
 export default theme;

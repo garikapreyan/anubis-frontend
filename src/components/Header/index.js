@@ -14,7 +14,7 @@ import {
   useTheme,
 } from '@mui/material';
 import {
-  NestedMenuItem
+  NestedMenuItem,
 } from 'mui-nested-menu';
 import {
   Language as LanguageIcon,
@@ -24,7 +24,9 @@ import {
   Search as SearchIcon,
 } from '@mui/icons-material';
 
-import {menuService} from '../../services';
+import {
+  menuService,
+} from '../../services';
 import Loader from '../Loader';
 import logo from '../../images/logo.png';
 import SearchDialog from '../SearchDialog';
@@ -49,7 +51,7 @@ function Header() {
       top: '0',
     },
     container: {
-      padding: '0 !important'
+      padding: '0 !important',
     },
     link: {
       mx: theme.spacing(0.5),
@@ -229,7 +231,7 @@ function Header() {
                 height: theme.spacing(6),
               },
               [theme.breakpoints.up('xl')]: {
-                height: theme.spacing(9)
+                height: theme.spacing(9),
               },
             }}
           >
@@ -260,7 +262,7 @@ function Header() {
                   onMouseOver={() => handleOpenSubMenu(elem.id)}
                   sx={classes.link}
                   id={elem.id}
-                  >
+                >
                   {elem.labels[0].label}
                 </Button>
                 <Menu
@@ -271,18 +273,16 @@ function Header() {
                     vertical: 'top',
                     horizontal: 'left',
                   }}
-                  // keepMounted
                   transformOrigin={{
                     vertical: 'top',
                     horizontal: 'left',
                   }}
                   open={!!anchorElSub && anchorElSub.id === elem.id}
-                  // open={Boolean(anchorElSub)}
                   onClose={handleCloseSubMenu}
                   MenuListProps={{
                     onMouseLeave: handleCloseSubMenu
                   }}
-                  >
+                >
                   {pages.map((item) => (item.parent_id === elem.id
                       && (
                       <MenuItem

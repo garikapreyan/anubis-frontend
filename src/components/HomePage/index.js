@@ -7,8 +7,9 @@ import {
   CardMedia,
   CardContent,
   Typography,
+  IconButton,
   CardActions,
-  useTheme, MenuItem, IconButton,
+  useTheme,
 } from '@mui/material';
 import {
   Facebook as FacebookIcon,
@@ -99,7 +100,7 @@ function HomePage() {
       width: '100%',
     },
     cardsWrapper: {
-      boxShadow: 'none'
+      boxShadow: 'none',
     },
     card: {
       display: 'inline-block',
@@ -144,7 +145,7 @@ function HomePage() {
       },
     },
     centerBord: {
-      backgroundImage: `url(${'/image/col_bg.png'})`
+      backgroundImage: `url(${'/image/col_bg.png'})`,
     },
     contentsBord: {
       maxWidth: 'xl',

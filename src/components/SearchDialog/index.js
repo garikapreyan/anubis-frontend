@@ -1,19 +1,19 @@
-import React, {useState, useRef} from 'react';
+import * as React from 'react';
 import {
+  Button,
+  DialogContentText,
+  DialogTitle,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  Slide,
   useTheme,
   TextField,
 } from '@mui/material';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Slide from '@mui/material/Slide';
 
 const styles = (theme) => ({
   searchInput: {
-    width: '100%'
+    width: '100%',
   }
 });
 

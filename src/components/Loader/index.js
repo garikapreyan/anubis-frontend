@@ -1,5 +1,9 @@
 import * as React from 'react';
-import {Box, CircularProgress, useTheme} from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  useTheme,
+} from '@mui/material';
 
 function Loader({ show }) {
   const styles = (theme) => ({
